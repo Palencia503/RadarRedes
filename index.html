@@ -1,0 +1,139 @@
+<!--Jose Palencia-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar de Espectro Digital - Analizador de Wi-Fi y Recomendador Tactico</title>
+    <meta name="description" content="Analiza las redes Wi-Fi a tu alcance, mide la saturacion de los canales de 2.4 GHz considerando solapamientos y encuentra el mejor canal tactico para tus antenas.">
+    <!--Google Fonts: Outfit & Space Grotesk-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <header class="header">
+        <div class="logo-area">
+            <span class="pulse-dot"></span>
+            <h1>Radar de Espectro Digital</h1>
+        </div>
+        <div class="action-area">
+            <span id="scan-status" class="scan-status-text">Listo para escanear</span>
+            <button id="btn-scan" class="btn-primary" aria-label="Escanear redes inalambricas">
+                <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="2"></circle><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 6a6 6 0 0 1 6 6"></path><path d="M12 22v-4"></path><path d="M2 12a10 10 0 0 1 10-10"></path><path d="M6 12a6 6 0 0 1 6-6"></path></svg></span> Reescanear Espectro
+            </button>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        <aside class="sidebar">
+            <section class="section-card">
+                <h2>Antenas Detectadas</h2>
+                <p class="section-desc">Selecciona el adaptador inalambrico para analizar:</p>
+                <nav id="interface-tabs" class="interface-nav" aria-label="Adaptadores de red Wi-Fi">
+                    <!--Las pestanias de interfaces se insertaran dinamicamente aqui-->
+                    <div class="loading-placeholder">Buscando antenas...</div>
+                </nav>
+            </section>
+
+            <section class="section-card visual-radar-card">
+                <h2>Radar Pasivo</h2>
+                <div class="radar-container">
+                    <div class="radar-screen">
+                        <div class="radar-scanlines"></div>
+                        <div class="radar-sweep"></div>
+                        <div class="radar-circle circle-1"></div>
+                        <div class="radar-circle circle-2"></div>
+                        <div class="radar-circle circle-3"></div>
+                        <div class="radar-axis-h"></div>
+                        <div class="radar-axis-v"></div>
+                        <div id="radar-dots-container" class="radar-dots">
+                            <!--Los puntos de las redes apareceran aqui-->
+                        </div>
+                    </div>
+                    <div class="radar-legend">
+                        <span class="legend-item"><span class="dot-indicator dot-24"></span> 2.4 GHz</span>
+                        <span class="legend-item"><span class="dot-indicator dot-5"></span> 5 GHz</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <section class="content-area">
+            <!--Bloque de Recomendacion Tactica-->
+            <article id="recommendation-banner" class="recommendation-card">
+                <div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon-rocket" style="color: var(--accent-cyan); filter: drop-shadow(0 0 8px var(--accent-cyan));"><path d="M4.5 16.5c-1.5 1.26-2 3.5-2 3.5s2.24-.5 3.5-2c1.26-1.5 2-3.5 2-3.5s-2.24.5-3.5 2z"></path><path d="M14 9l-4 4"></path><path d="M12 14c-1.5 1-2.5 2-3 3.5-.2.5.1 1 .6.8L12 17c1.5-.5 2.5-1.5 3.5-3l-3.5-3z"></path><path d="M14 9c1.5-1.5 3-2.5 4.5-3 .5-.2 1 .1.8.6C19 8.5 18 9.5 16.5 11L14 9z"></path><path d="M22 2l-7.42 7.42a8 8 0 1 0-11.16 11.16L22 2z"></path></svg></div>
+                <div class="rec-details">
+                    <span class="rec-tag">RECOMENDACION TACTICA DEL SISTEMA</span>
+                    <h3 id="rec-title">Analizando canales...</h3>
+                    <p id="rec-desc">Inicia un escaneo para determinar la mejor configuracion fisica para tu red privada.</p>
+                </div>
+            </article>
+
+            <!--Analisis Matematico de Canales-->
+            <section class="channels-section">
+                <div class="section-header">
+                    <h2>Analisis de Espectro (2.4 GHz)</h2>
+                    <span id="adapter-name-badge" class="frequency-badge">Sin adaptador</span>
+                </div>
+                <div id="channels-grid" class="channels-grid">
+                    <!--Tarjetas de canales principales (1, 6, 11) dinamicas-->
+                    <div class="channel-card-placeholder">Esperando datos de espectro...</div>
+                </div>
+            </section>
+
+            <!--Grafico de Ondas de Espectro (2.4 GHz)-->
+            <section class="spectrum-graph-section">
+                <div class="section-header">
+                    <h2>Solapamiento de Canales (Ondas de Frecuencia)</h2>
+                    <span class="frequency-badge">Visualizacion de Senial</span>
+                </div>
+                <div class="spectrum-waves-card">
+                    <div id="spectrum-waves-container" class="spectrum-waves-container">
+                        <!--Las ondas de los canales se dibujaran dinamicamente aqui-->
+                        <div class="channel-card-placeholder">Esperando datos de espectro para generar ondas...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!--Lista de Redes Detectadas-->
+            <section class="networks-section">
+                <div class="section-header">
+                    <h2>Redes Inalambricas Detectadas</h2>
+                    <span id="networks-count" class="badge">0 Redes</span>
+                </div>
+                <div class="table-container">
+                    <table class="networks-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre de Red (SSID)</th>
+                                <th scope="col">Canal</th>
+                                <th scope="col">Banda</th>
+                                <th scope="col">Senial</th>
+                            </tr>
+                        </thead>
+                        <tbody id="networks-list-body">
+                            <tr>
+                                <td colspan="4" class="table-empty">
+                                    Introduce una antena y pulsa "Reescanear Espectro" para comenzar.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Analizador de Basura Digital & Espectro - Proyectos Privados e Inmunes.</p>
+        <div class="status-footer">
+            <span class="status-led green"></span> Sistema en linea
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
