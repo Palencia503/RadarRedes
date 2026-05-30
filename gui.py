@@ -15,6 +15,61 @@ if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8')
 
 def obtener_datos_escaneo():
+    #Si la plataforma es Linux, usamos nmcli
+    if sys.platform.startswith('linux'):
+        resultado = {}
+        try:
+            #Ejecutamos nmcli para listar dispositivos de tipo wifi
+            proc_dev = subprocess.Popen(["nmcli", "-t", "-f", "DEVICE,TYPE", "dev"], 
+                                        stdout=subprocess.PIPE, 
+                                        stderr=subprocess.PIPE, 
+                                        encoding='utf-8',
+                                        errors='replace')
+            stdout_dev, _ = proc_dev.communicate()
+            
+            interfaces = []
+            for linea in stdout_dev.strip().split('\n'):
+                partes = linea.split(':')
+                if len(partes) >= 2 and partes[1].strip() == 'wifi':
+                    interfaces.append(partes[0].strip())
+                    
+            if not interfaces:
+                interfaces = ["wlan0"]
+                
+            for intf in interfaces:
+                proc_scan = subprocess.Popen(["nmcli", "-t", "-f", "SSID,BSSID,CHAN,SIGNAL,BAND", "dev", "wifi", "list", "ifname", intf], 
+                                             stdout=subprocess.PIPE, 
+                                             stderr=subprocess.PIPE, 
+                                             encoding='utf-8',
+                                             errors='replace')
+                stdout_scan, _ = proc_scan.communicate()
+                
+                redes_detectadas = []
+                for linea in stdout_scan.strip().split('\n'):
+                    if not linea:
+                        continue
+                    match = re.search(r'^(.*):([0-9a-fA-F\\:]{17,23}):(\d+):(\d+):(.*)$', linea)
+                    if match:
+                        ssid = match.group(1).strip()
+                        if not ssid:
+                            ssid = "[RED OCULTA]"
+                        canal_num = int(match.group(3))
+                        senal_num = int(match.group(4))
+                        
+                        es_24 = (1 <= canal_num <= 14)
+                        
+                        redes_detectadas.append({
+                            'ssid': ssid,
+                            'canal': canal_num,
+                            'senal': senal_num,
+                            'banda': '2.4 GHz' if es_24 else '5 GHz'
+                        })
+                resultado[intf] = redes_detectadas
+        except Exception as e:
+            return {"error": str(e)}
+        return resultado
+
+    #Para Windows (win32) o fallbacks
     try:
         proceso = subprocess.Popen(["netsh", "wlan", "show", "networks", "mode=bssid"], 
                                    stdout=subprocess.PIPE, 

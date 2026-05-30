@@ -25,7 +25,7 @@ Este es un analizador y radar de espectro digital para redes Wi-Fi (bandas de 2.
 1. Sistema Operativo: Windows (utiliza comandos nativos de `netsh wlan`).
 2. Python 3.x instalado.
 
-No requiere dependencias externas adicionales, ya que utiliza librerias nativas de Python y tecnologías web estandar (HTML5, CSS3, Javascript Vanilla).
+No requiere dependencias externas adicionales, ya que utiliza librerias nativas de Python y tecnologias web estandar (HTML5, CSS3, Javascript Vanilla).
 
 ## Como Iniciar
 
